@@ -1,0 +1,20 @@
+{
+  "name": "capstone-ii",
+  "version": "1.0.0",
+  "description": "Capstone II Project\u001b[1;5D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[DTutor Scheduler Project",
+  "main": "app.js",
+  "dependencies": {
+    "faker": "^4.1.0",
+    "mysql": "^2.16.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "\u0016https://github.com/MonyRP/Tutor-Scheduler.git"
+  },
+  "author": "Roman Padilla",
+  "license": "ISC"
+}

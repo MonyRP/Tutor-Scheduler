@@ -4,10 +4,21 @@
   "description": "Capstone II Project\u001b[1;5D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[DTutor Scheduler Project",
   "main": "app.js",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "connect-flash": "^0.1.1",
+    "express": "^4.16.4",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.6",
     "faker": "^4.1.0",
+    "fullcalendar": "^3.10.0",
+    "jquery": "^3.3.1",
+    "moment": "^2.24.0",
     "mysql": "^2.16.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack": "^4.29.3"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -4,6 +4,8 @@ const exphbs = require('express-handlebars');
 const flash = require('connect-flash');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
+const passport = require('passport');
 const mysql = require('mysql');
 
 const router = express.Router();
@@ -18,18 +20,21 @@ var connection = mysql.createConnection({
 
 // Sign up route
 router.get('/signup', (req, res) => {
-    res.render('accounts/signup');
+    res.render('users/signup');
 });
 
 // Login route
 router.get('/login', (req, res) => {
-    res.render('accounts/login');
-})
+    res.render('users/login');
+});
 
-// Login post
-router.post("/login", (req, res) => {
-   
-
+// Login form POST
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', {
+        successRedirect: '/forms/submitted',
+        failureRedirect: '/users/login',
+        failureFlash: true
+    })(req, res, next);
 });
 
 // Sign up form POST
@@ -50,7 +55,7 @@ router.post('/signup', (req, res) => {
     }
 
     if (errors.length > 0) {
-        res.render('accounts/signup', {
+        res.render('users/signup', {
             errors: errors,
             firstName: req.body.firstName,
             lastName: req.body.lastName,

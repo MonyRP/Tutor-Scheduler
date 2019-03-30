@@ -20,7 +20,7 @@
       <div id="calendar" class="w-100 mx-auto mb-4"></div>
       <form action="/schedule-session" method="post"
          class="shadow-lg border border-secondary rounded w-100 mx-auto p-5">
-         {{!-- Hidden element to hold value of tutor_id for use when checking available times --}}
+         {{!-- Hidden element to hold value of tutor_id. Used when checking available times --}}
          <input type="hidden" id="hidden-tutor-id" name="tutorId" value="{{tutor.banner_id}}">
          <div class="form-row justify-content-around">
             <div class="form-group col-6 pr-3">

@@ -4,13 +4,22 @@ const exphbs = require('express-handlebars');
 const flash = require('connect-flash');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
+const passport = require('passport');
 const mysql = require('mysql');
 const faker = require('faker');
 
 const app = express();
 
 // Load routes
-const accounts = require('./routes/accounts');
+const users = require('./routes/users');
+
+// Get createUsers methods
+const createUser = require('./config/database/createUser');
+
+// Passport Config
+require('./config/passport')(passport);
+
 
 // Connect to database
 var connection = mysql.createConnection({
@@ -59,17 +68,33 @@ app.use(session({
 }));
 
 app.use(flash());
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 // Global variables
 app.use(function (req, res, next) {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
+    res.locals.loginMessage = req.flash('loginMessage');
     next();
 });
 
 // Home Route
 app.get('/', (req, res) => {
+
+    // for (let i = 0; i < 8; i++) {
+
+    //     var sql = 'INSERT INTO `tutors` SET ?';
+    //     var student = createUser.generateUser();
+
+    //     connection.query(sql, [student], (error, results, fields) => {
+    //         logResults(JSON.stringify(results));
+    //     })
+    // }
+
     res.render('index');
 });
 
@@ -137,6 +162,14 @@ app.post('/schedule-session', (req, res) => {
         let session;
         let sql = 'SELECT * FROM `students` WHERE `email`= ?';
 
+        res.render('forms/schedule-session', {
+            errors: errors,
+            email: req.body.email,
+            dayOfWeek: req.body.dayOfWeek,
+            startTime: req.body.startTime,
+            description: req.body.description
+        });
+
         // Find banner ID using email given
         connection.query(sql, [email], (error, results, fields) => {
             if (error) {
@@ -184,7 +217,7 @@ app.get('/update-time', (req, res) => {
 });
 
 // Use routes
-app.use('/accounts', accounts);
+app.use('/users', users);
 
 const port = 5000;
 

@@ -2,7 +2,7 @@ $(document).ready(function () {
 
     $('#day-select').change(function () {
 
-        let tutorId = document.getElementById('hidden-tutor-id').value;
+        let tutorId = $('#hidden-tutor-id').val();
         let day = this.value;
         console.log("ID: " + tutorId);
         $.ajax({

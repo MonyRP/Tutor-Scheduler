@@ -17,11 +17,14 @@
 
    {{!-- Container for "Schedule Session" form --}}
    <div class="container mt-5 w-50">
-      <div id="calendar" class="w-100 mx-auto mb-4"></div>
+      {{!-- <div id="calendar" class="w-100 mx-auto mb-4"></div> --}}
       <form action="/schedule-session" method="post"
-         class="shadow-lg border border-secondary rounded w-100 mx-auto p-5">
+         class="shadow-lg border border-secondary rounded w-100 mx-auto p-4">
+
+         <h2 class="text-center mb-4">Schedule Tutoring Session</h2>
          {{!-- Hidden element to hold value of tutor_id. Used when checking available times --}}
-         <input type="hidden" id="hidden-tutor-id" name="tutorId" value="{{tutor.banner_id}}">
+         <input type="hidden" id="hidden-tutor-id" name="tutorId" value="{{bannerId}}">
+
          <div class="form-row justify-content-around">
             <div class="form-group col-6 pr-3">
                <label for="email">Confirm email:</label>
@@ -53,14 +56,11 @@
             </div>
          </div>
 
-
-
-
          <div class="form-row justify-content-center p-3">
             <div class="form-group col-8">
                <label for="description">Brief description of help needed:</label>
                <textarea class="form-control" id="description" rows="3" name="description"
-                  placeholder="{{description}}"></textarea>
+                  placeholder="Enter description of the help you need">{{description}}</textarea>
             </div>
          </div>
 

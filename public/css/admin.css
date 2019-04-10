@@ -1,7 +1,12 @@
-body,
-html {
+html,
+body {
     padding-top: 44px;
     height: 100%;
+}
+
+#time-select {
+    max-height: 400px;
+    overflow-x: hidden;
 }
 
 #footer {

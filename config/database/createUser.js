@@ -3,14 +3,14 @@ const passport = require('passport');
 const mysql = require('mysql');
 const faker = require('faker');
 
-// Generates random student or tutor. Used to populate student and/or tutor database tables
+// Generates random student, tutor, or admin. Used to populate student and/or tutor database tables
 var generateUser = function (password, domainName) {
-    var bannerId;
-    var firstName;
-    var lastName;
-    var email;
-    var salt;
-    var hash;
+    let bannerId;
+    let firstName;
+    let lastName;
+    let email;
+    let salt;
+    let hash;
 
     bannerId = Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
     firstName = faker.name.firstName();
@@ -19,8 +19,6 @@ var generateUser = function (password, domainName) {
 
     salt = bcrypt.genSaltSync(10);
     hash = bcrypt.hashSync(password || (firstName + lastName), salt);
-
-    console.log("Password match: " + bcrypt.compareSync((firstName + lastName), hash));
 
     return {
         banner_id: bannerId,

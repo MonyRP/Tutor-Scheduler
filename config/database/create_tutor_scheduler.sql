@@ -41,6 +41,16 @@ CREATE TABLE tutors (
     CONSTRAINT tutors_pk PRIMARY KEY (banner_id)
 );
 
+-- Table: Admin
+CREATE TABLE admin (
+   banner_id int NOT NULL AUTO_INCREMENT,
+   first_name varchar(70) NOT NULL,
+   last_name varchar(70) NOT NULL,
+   email varchar(120) NOT NULL,
+   password varchar(128) NOT NULL,
+   CONSTRAINT Admin_pk PRIMARY KEY (banner_id)
+);
+
 -- foreign keys
 -- Reference: appointment_students (table: appointment)
 ALTER TABLE appointment ADD CONSTRAINT appointment_students FOREIGN KEY appointment_students (students_banner_id)
@@ -55,4 +65,3 @@ ALTER TABLE tutor_schedule ADD CONSTRAINT tutor_schedule_tutors FOREIGN KEY tuto
     REFERENCES tutors (banner_id);
 
 -- End of file.
-

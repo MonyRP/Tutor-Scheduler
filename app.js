@@ -1,13 +1,19 @@
-const $ = require('jquery');
 const express = require('express');
 const exphbs = require('express-handlebars');
-const flash = require('connect-flash');
-const session = require('express-session');
 const bodyParser = require('body-parser');
-const bcrypt = require('bcryptjs');
+const session = require('express-session');
+const flash = require('connect-flash');
+const methodOverride = require('method-override');
 const passport = require('passport');
+const bcrypt = require('bcryptjs');
 const mysql = require('mysql');
 const faker = require('faker');
+const {
+    ensureAuthenticated,
+    ensureStudent,
+    ensureTutor,
+    ensureAdmin
+} = require('./helpers/auth');
 
 const app = express();
 
@@ -19,7 +25,6 @@ const createUser = require('./config/database/createUser');
 
 // Passport Config
 require('./config/passport')(passport);
-
 
 // Connect to database
 var connection = mysql.createConnection({
@@ -34,31 +39,27 @@ connection.connect((err) => {
         console.error('error connecting: ' + err.stack);
         return;
     }
-
     console.log('connected as id ' + connection.threadId);
 });
 
-
 // Middleware for static files
 app.use('/public', express.static(__dirname + '/public'));
-app.use('/fullcalendar', express.static(__dirname + '/node_modules/fullcalendar'));
-app.use('/moment', express.static(__dirname + '/node_modules/moment'));
-
 
 // Handlebars middleware
 app.engine('handlebars', exphbs({
     defaultLayout: 'main'
 }));
+
 app.set('view engine', 'handlebars');
 
 // Body Parser middleware
 app.use(bodyParser.urlencoded({
     extended: false
-}))
-app.use(bodyParser.json())
+}));
+app.use(bodyParser.json());
 
-// Method override middleware is used to update and delete (Needs to be installed)
-//app.use(methodOverride('_method'));
+// Method override middleware is used to update and delete
+app.use(methodOverride('_method'));
 
 // Express session midleware
 app.use(session({
@@ -67,11 +68,12 @@ app.use(session({
     saveUninitialized: true
 }));
 
+// connect-flash middleware
 app.use(flash());
+
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 // Global variables
 app.use(function (req, res, next) {
@@ -79,45 +81,31 @@ app.use(function (req, res, next) {
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
     res.locals.loginMessage = req.flash('loginMessage');
+    res.locals.user = req.user || null;
     next();
 });
 
 // Home Route
-app.get('/', (req, res) => {
+app.get('/', ensureStudent, (req, res) => {
 
-    // for (let i = 0; i < 8; i++) {
+    var sql = 'SELECT * FROM `tutors` ORDER BY `first_name` ASC';
 
-    //     var sql = 'INSERT INTO `tutors` SET ?';
-    //     var student = createUser.generateUser();
-
-    //     connection.query(sql, [student], (error, results, fields) => {
-    //         logResults(JSON.stringify(results));
-    //     })
-    // }
-
-    res.render('index');
+    connection.query(sql, (error, results, fields) => {
+        res.render('index', {
+            tutors: results,
+            name: 'Roman'
+        });
+    })
 });
 
 // Scheduled session route
-app.get('/schedule-session/:name', (req, res) => {
-    let firstName = req.params.name;
-    var sql = 'SELECT * FROM `tutors` WHERE `first_name`= ?'
+app.get('/schedule-session/:banner_id', ensureAuthenticated, (req, res) => {
+    let bannerId = req.params.banner_id;
 
-
-    connection.query(sql, [firstName], (error, results, fields) => {
-        let tutor = results[0];
-        sql = 'SELECT * FROM `tutor_schedule` WHERE `tutors_banner_id`= ?';
-
-        // Place holder values for testing
-        res.render('forms/schedule-session', {
-            tutor: tutor,
-            startTime: "08:30",
-            description: "Help with math"
-        });
-
+    res.render('forms/schedule-session', {
+        bannerId: bannerId
     });
 });
-
 
 // Route to handle POST request when scheduling appointment
 app.post('/schedule-session', (req, res) => {
@@ -127,6 +115,12 @@ app.post('/schedule-session', (req, res) => {
     if (!req.body.email) {
         errors.push({
             text: "Please add an email"
+        })
+    }
+
+    if (req.body.email != res.locals.user.email) {
+        errors.push({
+            text: "Confirmation email does not match records"
         })
     }
 
@@ -148,27 +142,22 @@ app.post('/schedule-session', (req, res) => {
     }
 
     if (errors.length > 0) {
-        res.render('forms/schedule-session', {
+
+        res.render(`forms/schedule-session`, {
             errors: errors,
+            bannerId: req.body.tutorId,
             email: req.body.email,
-            dayOfWeek: req.body.dayOfWeek,
-            startTime: req.body.startTime,
             description: req.body.description
         });
 
     } else {
         // If form is valid, add tutoring session to table appointment table 
+        let tutorId = req.body.tutorId;
+        let day = req.body.dayOfWeek;
+        let startTime = req.body.startTime;
         let email = req.body.email;
         let session;
         let sql = 'SELECT * FROM `students` WHERE `email`= ?';
-
-        res.render('forms/schedule-session', {
-            errors: errors,
-            email: req.body.email,
-            dayOfWeek: req.body.dayOfWeek,
-            startTime: req.body.startTime,
-            description: req.body.description
-        });
 
         // Find banner ID using email given
         connection.query(sql, [email], (error, results, fields) => {
@@ -184,10 +173,11 @@ app.post('/schedule-session', (req, res) => {
 
                 sql = 'SELECT * FROM `tutors` WHERE `banner_id` = ?'
                 // Find tutor and render submitted page with appointment details
-                connection.query(sql, [req.body.tutorId], (error, results, fields) => {
-                    res.render("submitted", {
+                connection.query(sql, [tutorId], (error, results, fields) => {
+                    res.render("forms/submitted", {
                         tutorFirstName: results[0].first_name,
                         tutorLastName: results[0].last_name,
+                        day: day,
                         startTime: session.start_time,
                         description: session.description
                     });
@@ -195,16 +185,22 @@ app.post('/schedule-session', (req, res) => {
                 });
             }
         });
+
+        let updateSql = 'UPDATE tutor_schedule SET booked = 1 ' +
+            'WHERE `tutors_banner_id` = ? and `day` = ? and `start_time` = ?';
+
+        // Update tutor_schedule table as booked for given day and time
+        connection.query(updateSql, [tutorId, day, startTime], (error, results, fields) => {});
     }
 });
 
 // GET route for updating tutor times available
-app.get('/update-time', (req, res) => {
+app.get('/update-time', ensureAuthenticated, (req, res) => {
 
     let tutorID = req.query.tutor_id;
     let day = req.query.day;
 
-    var sql = 'SELECT `start_time` FROM `tutor_schedule` WHERE `tutors_banner_id`= ? and `day`= ?'
+    var sql = 'SELECT `start_time` FROM `tutor_schedule` WHERE `tutors_banner_id`= ? and `day`= ? and `booked`= 0'
 
     connection.query(sql, [tutorID, day], (error, results, fields) => {
 
@@ -243,5 +239,4 @@ function makeSession(req, results) {
 // Function to log query results
 function logResults(results) {
     console.log(results);
-
 }

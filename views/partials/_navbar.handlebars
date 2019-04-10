@@ -1,7 +1,7 @@
 <!-- Beginning Navbar -->
 <nav class="navbar navbar-expand-lg fixed-top py-4 navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">NNMC Tutor</a>
+        <a class="navbar-brand" href="/">NNMC Tutor Scheduler</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -9,21 +9,52 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/about">About</a>
-                </li>
+                {{#if user}}
+                <li class="dropdown">
+                    <div class="nav-item">
+                        <button class="btn btn-dark nav-link dropdown-toggle" type="button" id="account-dropdown"
+                            data-toggle="dropdown">
+                            <i class="fas fa-user text-primary"></i> Hello, {{user.first_name}}
+                        </button>
+                        <div class="dropdown-menu bg-light" aria-labelledby="account-dropdown">
+                            {{#if user.isStudent}}
+                            <a class="dropdown-item text-dark" href="/users/student/my-account">My Account</a>
+                            {{/if}}
 
-                <li class="nav-item">
-                    <a class="nav-link" href="../users/login">Log in</a>
+                            {{#if user.isAdmin}}
+                            <a class="dropdown-item text-dark" href="/users/admin/create-tutor">Create Tutor</a>
+                            <a class="dropdown-item text-dark" href="/users/admin/delete-tutor">Delete Tutor</a>
+                            <a class="dropdown-item text-dark" href="/users/admin/set-schedule">Set Schedule</a>
+                            <a class="dropdown-item text-dark" href="/users/admin/delete-schedule">Delete Schedule</a>
+                            {{/if}}
+                            <a class="dropdown-item text-dark" href="/users/logout"><i
+                                    class="fas fa-sign-out-alt text-primary"></i> Log out</a>
+                        </div>
+                    </div>
                 </li>
+                {{#if user.isStudent}}
                 <li class="nav-item">
-                    <a class="nav-link" href="../users/signup">Sign up</a>
+                    <a class="nav-link" href="/"><i class="fas fa-home text-primary"></i> Home</a>
                 </li>
+                {{/if}}
+                {{else}}
+
+                <li class="dropdown">
+                    <div class="nav-item">
+                        <button class="btn btn-dark nav-link dropdown-toggle" type="button" id="login-dropdown"
+                            data-toggle="dropdown">
+                            <i class="fas fa-sign-in-alt text-primary"></i> Login
+                        </button>
+                        <div class="dropdown-menu bg-light" aria-labelledby="login-dropdown">
+                            <a class="nav-link text-dark" href="/users/login/student">Student</a>
+                            <a class="nav-link text-dark" href="/users/login/tutor">Tutor</a>
+                            <a class="nav-link text-dark" href="/users/login/admin">Admin</a>
+                        </div>
+                    </div>
+                </li>
+                {{/if}}
                 <li class="nav-item">
-                    <a class="nav-link" href="/my-account">My Account</a>
+                    <a class="nav-link" href="/about"><i class="fas fa-info text-primary"></i> About</a>
                 </li>
             </ul>
         </div>

@@ -22,3 +22,9 @@
 
 ## Admin can also set and delete tutor's available times
 ![](images/set-schedule.JPG)
+
+## Students table in database showing hashed passwords
+![](images/students-table.JPG)
+
+## Appointment table in database
+![](images/appointment-table.JPG)

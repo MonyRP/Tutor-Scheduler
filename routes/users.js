@@ -116,15 +116,28 @@ router.get('/admin/create-tutor', ensureAdmin, (req, res) => {
 
 // Create tutor POST route
 router.post('/admin/create-tutor', (req, res) => {
+    let math = req.body.math ? 1 : 0;
+    let science = req.body.science ? 1 : 0;
+    let english = req.body.english ? 1 : 0;
+    let history = req.body.history ? 1 : 0;
+    let engineering = req.body.engineering ? 1 : 0;
+    let business = req.body.business ? 1 : 0;
+
     let salt = bcrypt.genSaltSync(10);
     let hash = bcrypt.hashSync(req.body.password, salt);
 
     let tutor = {
-        banner_id: req.body.bannerId,
+        banner_id: req.body.bannerId || null,
         first_name: req.body.firstName,
         last_name: req.body.lastName,
         email: req.body.email,
-        password: hash
+        password: hash,
+        math: math,
+        science: science,
+        english: english,
+        history: history,
+        engineering: engineering,
+        business: business
     }
 
     let sql = 'INSERT INTO `tutors` SET ?';

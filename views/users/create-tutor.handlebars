@@ -14,9 +14,11 @@
 
     <div class="container-fluid">
         <div class="row justify-content-center mt-5">
-            <div class="col-lg-5 shadow-lg border border-secondary rounded p-4">
+            <div class="col-lg-6 col-md-7 col-sm-9 shadow-lg border border-secondary rounded p-4">
                 <form action="/users/admin/create-tutor" method="POST">
-                    <h2 class="text-center mb-4">Create Tutor</h2>
+                <div class="form-row text-center">
+                    <h2 class="col mb-4">Create Tutor</h2>
+                </div>
                     <div class="form-row">
                         <div class="form-group col">
                             <label for="bannerId">Banner ID: </label>
@@ -47,15 +49,83 @@
                                 placeholder="Enter Password">
                         </div>
                     </div>
+
+                    <div class="form-row text-center my-3">
+                        <h5 class="col">What subjects can tutor help students with?</h5>
+                    </div>
+                    
+                    {{!-- Subject checkbox row --}}
+                    <div class="form-row mb-3">
+                        <div class="form-group col">
+                            <div class="form-check">
+                                <input id="mathCheck" class="form-check-input" type="checkbox" name="math">
+                                <label class="form-check-label" for="math">
+                                    Math
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group col">
+                            <div class="form-check">
+                                <input id="scienceCheck" class="form-check-input" type="checkbox" name="science">
+                                <label class="form-check-label" for="science">
+                                    Science
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group col">
+                            <div class="form-check">
+                                <input id="englishCheck" class="form-check-input" type="checkbox" name="english">
+                                <label class="form-check-label" for="english">
+                                    English
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group col">
+                            <div class="form-check">
+                                <input id="historyCheck" class="form-check-input" type="checkbox" name="history">
+                                <label class="form-check-label" for="history">
+                                    History
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group col">
+                            <div class="form-check">
+                                <input id="engineeringCheck" class="form-check-input" type="checkbox"
+                                    name="engineering">
+                                <label class="form-check-label" for="engineering">
+                                    Engineering
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group col">
+                            <div class="form-check">
+                                <input id="businessCheck" class="form-check-input" type="checkbox" name="business">
+                                <label class="form-check-label" for="business">
+                                    Business
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
                     <div class="form-row justify-content-center">
                         <div class="col-5">
                             <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
                         </div>
                     </div>
+
+                </form>
             </div>
-            </form>
+            {{!-- End of col --}}
         </div>
+        {{!-- End of row --}}
     </div>
+    {{!-- End of container-fluid --}}
     </div>
 
     {{!-- CDNs --}}

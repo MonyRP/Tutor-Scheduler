@@ -4,7 +4,7 @@ $(document).ready(function () {
 
         let tutorId = $('#hidden-tutor-id').val();
         let day = this.value;
-        console.log("ID: " + tutorId);
+
         $.ajax({
             type: 'GET',
             url: '/update-time',

@@ -88,13 +88,27 @@ app.use(function (req, res, next) {
 // Home Route
 app.get('/', ensureStudent, (req, res) => {
 
-    var sql = 'SELECT * FROM `tutors` ORDER BY `first_name` ASC';
+    var sql = 'SELECT sum(math) AS math_count, sum(science) AS science_count,' +
+        'sum(engineering) AS engineering_count, sum(business) AS business_count FROM `tutors`';
 
     connection.query(sql, (error, results, fields) => {
         res.render('index', {
-            tutors: results,
-            name: 'Roman'
+            mathCount: results[0].math_count,
+            scienceCount: results[0].science_count,
+            engineeringCount: results[0].engineering_count,
+            businessCount: results[0].business_count,
         });
+    })
+});
+
+// Display tutors route
+app.get('/display-tutors', ensureStudent, (req, res) => {
+    let subject = req.query.subject;
+
+    var sql = `SELECT * FROM tutors WHERE ${subject} = 1 ORDER BY first_name ASC`;
+
+    connection.query(sql, (error, results, fields) => {
+        res.send(results);
     })
 });
 
@@ -234,9 +248,4 @@ function makeSession(req, results) {
     };
 
     return session;
-}
-
-// Function to log query results
-function logResults(results) {
-    console.log(results);
 }

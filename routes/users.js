@@ -221,7 +221,7 @@ router.get('/student/my-account', ensureStudent, (req, res) => {
 });
 
 // Test route that poulates database with 500 random students and 6 random tutors
-router.get('/admin/populate-database', ensureAdmin, (req, res) => {
+router.get('/admin/populate-database', (req, res) => {
 
     for (let i = 0; i < 500; i++) {
 

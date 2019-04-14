@@ -3,15 +3,17 @@ const exphbs = require('express-handlebars');
 const flash = require('connect-flash');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const bcrypt = require('bcryptjs');
 const mysql = require('mysql');
+const faker = require('faker');
 const {
     ensureAuthenticated,
     ensureStudent,
     ensureTutor,
     ensureAdmin
 } = require('../helpers/auth');
+const createUser = require('../config/database/createUser');
 
 const router = express.Router();
 
@@ -216,6 +218,30 @@ router.get('/student/my-account', ensureStudent, (req, res) => {
             appointment: results
         });
     });
+});
+
+// Test route that poulates database with 500 random students and 6 random tutors
+router.get('/admin/populate-database', ensureAdmin, (req, res) => {
+
+    for (let i = 0; i < 500; i++) {
+
+        let sql = 'INSERT INTO `students` SET ?';
+        let student = createUser.generateRandomStudent();
+
+        connection.query(sql, [student], (error, results, fields) => {
+            if (error) console.log(error);
+        })
+    }
+
+    for (let i = 0; i < 6; i++) {
+
+        let sql = 'INSERT INTO `tutors` SET ?';
+        let student = createUser.generateRandomTutor();
+
+        connection.query(sql, [student], (error, results, fields) => {
+            if (error) console.log(error);
+        })
+    }
 });
 
 // Create and return session object

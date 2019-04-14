@@ -1,13 +1,11 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
+const mysql = require('mysql');
 const session = require('express-session');
 const flash = require('connect-flash');
 const methodOverride = require('method-override');
 const passport = require('passport');
-const bcrypt = require('bcryptjs');
-const mysql = require('mysql');
-const faker = require('faker');
 const {
     ensureAuthenticated,
     ensureStudent,
@@ -19,9 +17,6 @@ const app = express();
 
 // Load routes
 const users = require('./routes/users');
-
-// Get createUsers methods
-const createUser = require('./config/database/createUser');
 
 // Passport Config
 require('./config/passport')(passport);
@@ -88,7 +83,7 @@ app.use(function (req, res, next) {
 // Home Route
 app.get('/', ensureStudent, (req, res) => {
 
-    var sql = 'SELECT sum(math) AS math_count, sum(science) AS science_count,' +
+    let sql = 'SELECT sum(math) AS math_count, sum(science) AS science_count,' +
         'sum(engineering) AS engineering_count, sum(business) AS business_count FROM `tutors`';
 
     connection.query(sql, (error, results, fields) => {
@@ -105,7 +100,7 @@ app.get('/', ensureStudent, (req, res) => {
 app.get('/display-tutors', ensureStudent, (req, res) => {
     let subject = req.query.subject;
 
-    var sql = `SELECT * FROM tutors WHERE ${subject} = 1 ORDER BY first_name ASC`;
+    let sql = `SELECT * FROM tutors WHERE ${subject} = 1 ORDER BY first_name ASC`;
 
     connection.query(sql, (error, results, fields) => {
         res.send(results);
@@ -214,7 +209,7 @@ app.get('/update-time', ensureAuthenticated, (req, res) => {
     let tutorID = req.query.tutor_id;
     let day = req.query.day;
 
-    var sql = 'SELECT `start_time` FROM `tutor_schedule` WHERE `tutors_banner_id`= ? and `day`= ? and `booked`= 0'
+    let sql = 'SELECT `start_time` FROM `tutor_schedule` WHERE `tutors_banner_id`= ? and `day`= ? and `booked`= 0'
 
     connection.query(sql, [tutorID, day], (error, results, fields) => {
 

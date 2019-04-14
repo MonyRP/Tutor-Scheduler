@@ -1,5 +1,3 @@
-use tutor_scheduler;
--- tables
 -- Table: appointment
 CREATE TABLE appointment (
     appointment_id int NOT NULL AUTO_INCREMENT,
@@ -27,18 +25,24 @@ CREATE TABLE tutor_schedule (
     tutors_banner_id int NOT NULL,
     day varchar(14) NOT NULL,
     start_time time NOT NULL,
-    booked bool NOT NULL,
+    booked tinyint(1) NOT NULL,
     CONSTRAINT tutor_schedule_pk PRIMARY KEY (tutor_schedule_id)
 );
 
 -- Table: tutors
 CREATE TABLE tutors (
-    banner_id int NOT NULL AUTO_INCREMENT,
-    first_name varchar(70) NOT NULL,
-    last_name varchar(70) NOT NULL,
-    email varchar(120) NOT NULL,
-    password varchar(128) NOT NULL,
-    CONSTRAINT tutors_pk PRIMARY KEY (banner_id)
+   banner_id int NOT NULL AUTO_INCREMENT,
+   first_name varchar(70) NOT NULL,
+   last_name varchar(70) NOT NULL,
+   email varchar(120) NOT NULL,
+   password varchar(128) NOT NULL,
+   math tinyint(1) NOT NULL,
+   science tinyint(1) NOT NULL,
+   english tinyint(1) NOT NULL,
+   history tinyint(1) NOT NULL,
+   engineering tinyint(1) NOT NULL,
+   business tinyint(1) NOT NULL,
+   CONSTRAINT tutors_pk PRIMARY KEY (banner_id)
 );
 
 -- Table: Admin
@@ -63,5 +67,3 @@ ALTER TABLE appointment ADD CONSTRAINT appointment_tutors FOREIGN KEY appointmen
 -- Reference: tutor_schedule_tutors (table: tutor_schedule)
 ALTER TABLE tutor_schedule ADD CONSTRAINT tutor_schedule_tutors FOREIGN KEY tutor_schedule_tutors (tutors_banner_id)
     REFERENCES tutors (banner_id);
-
--- End of file.

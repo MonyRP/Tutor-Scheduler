@@ -1,4 +1,4 @@
-# Tutor-Scheduler Web App
+# Tutor Scheduler Web App
 
 
 
